@@ -1,2 +1,3 @@
 # My-First-Django-Project
-For learning back-end
+
+This project is my first Django Project. I'm learning Django to improve my back-end experience.
