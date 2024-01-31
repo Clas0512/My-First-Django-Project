@@ -1,5 +1,6 @@
 from django.http.response import HttpResponse
 from django.shortcuts import render
+from .models import Student
 
 # Create your views here.
 
@@ -19,3 +20,8 @@ def blogsId(request, id):
     return render(request, "blog/blog-id.html", {
         "id": id
     })
+
+def student(request, name, age, email):
+    new_entry = Student(name, age, email)
+    new_entry.save()
+    return HttpResponse("Veri basariiii")
