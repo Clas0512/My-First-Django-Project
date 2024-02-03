@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% for post in post_list %}
+        <b>ID</b>: {{ post.id }} <br>
+        <b>Title</b>: {{ post.title }} <br>
+        <b>Content</b>: {{ post.content }} <br>
+        <b>Owner</b>: {{ post.owner.email }} <br><br>
+    {% endfor %}
+{% endblock %}

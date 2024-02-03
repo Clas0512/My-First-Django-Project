@@ -1,64 +1,35 @@
+import hashlib
+
+from django.contrib.auth.models import User
+from django.views.generic.edit import CreateView
+from django.views.generic.list import ListView
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
-from .models import Student
-from .forms import StudentForm
+from .models import Post
 
 
-def index(request):
-    # return HttpResponse("Home Page")
-    return render(request, "blog/index.html")
+class PostCreateView(CreateView):
+    # model = User
+    # fields = ['username', 'password', 'email', 'is_active', 'is_staff']
+    model = Post
+    success_url = '/'
+    fields = ['title', 'content', 'owner']
+    template_name = 'blog/register.html'
 
 
-def blogs(request):
-    # return HttpResponse("Blogs")
-    return render(request, "blog/blogs.html")
+class PostListView(ListView):
+    model = Post
+    template_name = 'blog/list.html'
+    context_object_name = 'post_list'
 
 
-def blogsId(request, id):
-    # return HttpResponse("Blog Number: " + str(id))
-    return render(request, "blog/blog-id.html", {
-        "id": id
-    })
+class UserCreateView(CreateView):
+    model = User
+    fields = ['username', 'password', 'email']
+    template_name = 'blog/user-register.html'
+    success_url = '/'
 
-def kayit(request):
-    # Eğer form gönderilmediyse, sadece formu göster
-    if request.method == 'GET':
-        form = StudentForm()
-        return render(request, 'blog/kayitol.html', {'form': form})
-    else:
-        # Eğer form gönderildiyse, formu işle ve student-add'e yönlendir
-        form = StudentForm(request.POST)
-        if form.is_valid():
-            name = form.cleaned_data['name']
-            age = form.cleaned_data['age']
-            email = form.cleaned_data['email']
-            new_entry = Student(name=name, age=age, email=email)
-            new_entry.save()
-            # Eğer işlem başarılı ise, student-add view'ına yönlendir
-            return redirect('student-add')
-        else:
-            # Eğer form geçerli değilse, hata mesajları ile birlikte aynı sayfayı göster
-            return render(request, 'blog/kayitol.html', {'form': form})
-
-def student(request):
-    if request.method == 'POST':
-        form = StudentForm(request.POST)
-        if form.is_valid():
-            name = form.cleaned_data['name']
-            age = form.cleaned_data['age']
-            email = form.cleaned_data['email']
-            new_entry = Student(name=name, age=age, email=email)
-            new_entry.save()
-            return HttpResponse("Veri basariiii")
-    else:
-        form = StudentForm()
-
-    return render(request, 'blog/kayitol.html', {'form': form})
-
-def student(request, name, age, email):
-    new_entry = Student(name=name, age=age, email=email)
-    new_entry.save()
-    return HttpResponse("Veri basariiii")
-
-def detail(request, question_id):
-    return HttpResponse("You're looking at question %s." % question_id)
+    def form_valid(self, form):
+        obj = form.save()
+        obj.set_password(form.cleaned_data['password'])
+        super().form_valid(form)
