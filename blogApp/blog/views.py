@@ -1,8 +1,11 @@
+from typing import Any
 from django.contrib.auth import authenticate, login
+from django.db.models.query import QuerySet
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic.list import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
@@ -11,6 +14,14 @@ from .models import Post
 
 from django.views.generic.base import TemplateView
 
+
+class ChatPageView(TemplateView):
+    template_name = 'blog/chat.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['my_data'] = 'Bu veri home2.html içinde kullanılabilir.'
+        return context
 
 class HomePageView(TemplateView):
     template_name = "blog/home.html"
@@ -32,13 +43,13 @@ class UserLogoutView(LogoutView):
     success_url = reverse_lazy('/')
 
 
-class PostCreateView(CreateView):
+class PostCreateView(LoginRequiredMixin, CreateView):
     # model = User
     # fields = ['username', 'password', 'email', 'is_active', 'is_staff']
     model = Post
     success_url = '/post'
     fields = ['title', 'content', 'owner']
-    template_name = 'blog/register.html'
+    template_name = 'blog/post.html'
 
 
 class PostListView(ListView):
@@ -56,7 +67,7 @@ class PostListView(ListView):
         context = super().get_context_data(**kwargs)
         context['is_authenticated'] = self.request.user.is_authenticated
         return context
-	
+
 
 class UserDetailView(DetailView):
 	model = Post

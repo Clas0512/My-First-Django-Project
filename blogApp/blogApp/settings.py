@@ -24,9 +24,10 @@ SECRET_KEY = 'django-insecure-h7s(cy+pc2u+qahn4%a4r1f=!q9cj20#jebnmdic^#(ynt*hox
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost','10.11.29.1']
+ALLOWED_HOSTS = ['10.11.29.1']
+# ALLOWED_HOSTS = ['*']
 
-
+ASGI_APPLICATION = 'chat.asgi.application'
 # Application definition
 
 INSTALLED_APPS = [
@@ -51,6 +52,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'blogApp.urls'
 
+LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
